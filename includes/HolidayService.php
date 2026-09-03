@@ -129,6 +129,7 @@ class HolidayService
             'holidays' => $holidays,
             'stats' => $this->buildStats($holidays),
             'years' => $this->getAvailableYears(),
+            'total_all' => $this->countAll(),
         ];
     }
 

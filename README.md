@@ -95,6 +95,7 @@ holiday_system/
 │   └── init.php
 ├── sql/
 │   ├── schema.sql            holidays table
+│   ├── holidays_full.sql     Full dump (table + all holiday rows)
 │   ├── seed_data.php
 │   └── desc_ms_map.php       Malay descriptions
 └── LICENSE
@@ -116,7 +117,11 @@ $password = '';   // your MySQL password
 
 `config/db.php` is gitignored so real credentials stay local.
 
-5. Open: http://localhost/project/holiday_system/install.php
+5. Open: http://localhost/project/holiday_system/index.php  
+   Holiday data loads automatically on first visit if the database is empty.
+
+Optional: import `sql/holidays_full.sql` in phpMyAdmin instead (Select database → Import).
+
 6. After success, open: http://localhost/project/holiday_system/index.php
 
 If you prefer phpMyAdmin only:

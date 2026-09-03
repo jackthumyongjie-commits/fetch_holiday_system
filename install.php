@@ -18,7 +18,16 @@ try {
     $config = ['host' => '', 'dbname' => '', 'username' => ''];
 }
 
-$already = is_file(cuti_install_lock_path());
+$already = false;
+if (is_file(cuti_install_lock_path())) {
+    try {
+        require_once __DIR__ . '/config/db.php';
+        $count = (int) cuti_db()->query('SELECT COUNT(*) FROM holidays')->fetchColumn();
+        $already = $count > 0;
+    } catch (Throwable $e) {
+        $already = false;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,13 +72,15 @@ $already = is_file(cuti_install_lock_path());
             <?php if (!$run): ?>
                 <form method="post" action="install.php">
                     <?php if ($already): ?>
-                        <p class="banner banner-info" role="status">Cuti MY is already installed. Running again is blocked to prevent accidental repeats. You can still open the homepage.</p>
+                        <p class="banner banner-info" role="status">Cuti MY is already installed and holiday data was found. You can open the homepage.</p>
                     <?php endif; ?>
                     <button class="btn btn-primary" type="submit" <?= $already ? 'disabled' : '' ?>>
                         <?= $already ? 'Already installed' : 'Install now' ?>
                     </button>
                     <?php if ($already): ?>
                         <p class="hint">To reinstall, delete <code>config/install.lock</code> and run this page again. Existing holiday rows will not be duplicated.</p>
+                    <?php else: ?>
+                        <p class="hint">If you uploaded <code>install.lock</code> from another computer but this database is empty, click Install now to load holiday data.</p>
                     <?php endif; ?>
                 </form>
             <?php else: ?>

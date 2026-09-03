@@ -22,6 +22,9 @@ if ($method !== 'GET') {
 }
 
 try {
+    require_once dirname(__DIR__) . '/includes/Installer.php';
+    cuti_ensure_seeded();
+
     $service = new HolidayService();
     $result = $service->getHolidays([
         'year' => $_GET['year'] ?? 'all',
@@ -35,6 +38,7 @@ try {
         'holidays' => $result['holidays'],
         'stats' => $result['stats'],
         'years' => $result['years'],
+        'total_all' => $result['total_all'],
     ], JSON_UNESCAPED_UNICODE);
 } catch (InvalidArgumentException $e) {
     http_response_code(400);

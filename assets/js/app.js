@@ -152,8 +152,18 @@
         }
         status.hidden = state.holidays.length > 0;
         if (state.holidays.length === 0) {
+          var totalAll = typeof result.data.total_all === 'number' ? result.data.total_all : 0;
           status.className = 'status is-empty';
-          status.textContent = i18n.t(state.lang, 'empty');
+          if (totalAll === 0) {
+            status.innerHTML = '';
+            status.appendChild(document.createTextNode(i18n.t(state.lang, 'needInstall') + ' '));
+            var link = document.createElement('a');
+            link.href = 'install.php';
+            link.textContent = 'install.php';
+            status.appendChild(link);
+          } else {
+            status.textContent = i18n.t(state.lang, 'empty');
+          }
         }
         renderAll();
       })

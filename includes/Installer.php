@@ -81,25 +81,29 @@ function cuti_run_install(bool $force = false): array
         } catch (Throwable $e) {
             $count = 0;
         }
-        $steps[] = [
-            'id' => 'lock',
-            'label' => 'Installation lock',
-            'ok' => true,
-            'detail' => 'Cuti MY is already installed (' . $count . ' holiday records). Duplicate inserts are blocked. Delete config/install.lock to run a full install again.',
-        ];
-        $steps[] = [
-            'id' => 'table',
-            'label' => 'Create holidays table',
-            'ok' => true,
-            'detail' => 'Skipped because the application is already installed.',
-        ];
-        $steps[] = [
-            'id' => 'seed',
-            'label' => 'Insert holiday data',
-            'ok' => true,
-            'detail' => 'Skipped because the application is already installed.',
-        ];
-        return $steps;
+
+        // Lock file may have been uploaded from another server while this DB is still empty.
+        if ($count > 0) {
+            $steps[] = [
+                'id' => 'lock',
+                'label' => 'Installation lock',
+                'ok' => true,
+                'detail' => 'Cuti MY is already installed (' . $count . ' holiday records). Duplicate inserts are blocked. Delete config/install.lock to run a full install again.',
+            ];
+            $steps[] = [
+                'id' => 'table',
+                'label' => 'Create holidays table',
+                'ok' => true,
+                'detail' => 'Skipped because the application is already installed.',
+            ];
+            $steps[] = [
+                'id' => 'seed',
+                'label' => 'Insert holiday data',
+                'ok' => true,
+                'detail' => 'Skipped because the application is already installed.',
+            ];
+            return $steps;
+        }
     }
 
     try {
@@ -120,40 +124,9 @@ function cuti_run_install(bool $force = false): array
         return $steps;
     }
 
-    $sql = 'INSERT IGNORE INTO holidays
-        (holiday_date, year, name_en, name_zh, name_ms, type, states,
-         description_en, description_zh, description_ms, is_birthday)
-        VALUES
-        (:holiday_date, :year, :name_en, :name_zh, :name_ms, :type, :states,
-         :description_en, :description_zh, :description_ms, :is_birthday)';
-
     try {
         $pdo->beginTransaction();
-        $stmt = $pdo->prepare($sql);
-        $inserted = 0;
-        $skipped = 0;
-
-        foreach (cuti_my_get_seed_rows() as $row) {
-            $stmt->execute([
-                'holiday_date' => $row['holiday_date'],
-                'year' => $row['year'],
-                'name_en' => $row['name_en'],
-                'name_zh' => $row['name_zh'],
-                'name_ms' => $row['name_ms'],
-                'type' => $row['type'],
-                'states' => $row['states'],
-                'description_en' => $row['description_en'],
-                'description_zh' => $row['description_zh'],
-                'description_ms' => $row['description_ms'],
-                'is_birthday' => $row['is_birthday'],
-            ]);
-            if ($stmt->rowCount() > 0) {
-                $inserted++;
-            } else {
-                $skipped++;
-            }
-        }
-
+        $result = cuti_seed_holidays($pdo);
         $pdo->commit();
         @file_put_contents($lockFile, date('c') . PHP_EOL);
 
@@ -161,7 +134,7 @@ function cuti_run_install(bool $force = false): array
             'id' => 'seed',
             'label' => 'Insert holiday data',
             'ok' => true,
-            'detail' => $inserted . ' new records inserted, ' . $skipped . ' existing records skipped.',
+            'detail' => $result['inserted'] . ' new records inserted, ' . $result['skipped'] . ' existing records skipped.',
         ];
     } catch (Throwable $e) {
         if ($pdo->inTransaction()) {
@@ -176,6 +149,78 @@ function cuti_run_install(bool $force = false): array
     }
 
     return $steps;
+}
+
+function cuti_seed_holidays(PDO $pdo): array
+{
+    $sql = 'INSERT IGNORE INTO holidays
+        (holiday_date, year, name_en, name_zh, name_ms, type, states,
+         description_en, description_zh, description_ms, is_birthday)
+        VALUES
+        (:holiday_date, :year, :name_en, :name_zh, :name_ms, :type, :states,
+         :description_en, :description_zh, :description_ms, :is_birthday)';
+
+    $stmt = $pdo->prepare($sql);
+    $inserted = 0;
+    $skipped = 0;
+
+    foreach (cuti_my_get_seed_rows() as $row) {
+        $stmt->execute([
+            'holiday_date' => $row['holiday_date'],
+            'year' => $row['year'],
+            'name_en' => $row['name_en'],
+            'name_zh' => $row['name_zh'],
+            'name_ms' => $row['name_ms'],
+            'type' => $row['type'],
+            'states' => $row['states'],
+            'description_en' => $row['description_en'],
+            'description_zh' => $row['description_zh'],
+            'description_ms' => $row['description_ms'],
+            'is_birthday' => $row['is_birthday'],
+        ]);
+        if ($stmt->rowCount() > 0) {
+            $inserted++;
+        } else {
+            $skipped++;
+        }
+    }
+
+    return ['inserted' => $inserted, 'skipped' => $skipped];
+}
+
+/**
+ * Create the holidays table and load seed data when the database is empty.
+ * Safe to call on every request (no-op once data exists).
+ */
+function cuti_ensure_seeded(): void
+{
+    require_once dirname(__DIR__) . '/config/db.php';
+
+    $pdo = cuti_db();
+    $pdo->exec(cuti_schema_sql());
+
+    $count = 0;
+    try {
+        $count = (int) $pdo->query('SELECT COUNT(*) FROM holidays')->fetchColumn();
+    } catch (Throwable $e) {
+        $count = 0;
+    }
+
+    if ($count > 0) {
+        return;
+    }
+
+    $pdo->beginTransaction();
+    try {
+        cuti_seed_holidays($pdo);
+        $pdo->commit();
+        @file_put_contents(cuti_install_lock_path(), date('c') . PHP_EOL);
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        throw $e;
+    }
 }
 
 function cuti_install_succeeded(array $steps): bool

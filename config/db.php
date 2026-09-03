@@ -10,7 +10,7 @@
 $host = 'localhost';
 $dbname = 'cuti_my';
 $username = 'root';
-$password = '';
+$password = 'jack005432';
 
 $GLOBALS['CUTI_DB'] = [
     'host' => $host,
