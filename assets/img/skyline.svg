@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Bright Malaysian coastal morning">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#9fd4e8"/>
+      <stop offset="45%" stop-color="#c9e8f2"/>
+      <stop offset="100%" stop-color="#f3f9f4"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4db0c8"/>
+      <stop offset="100%" stop-color="#1d7a8c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1440" height="900" fill="url(#sky)"/>
+  <circle cx="1080" cy="160" r="70" fill="#ffe08a"/>
+  <path fill="#7ec8b3" d="M0 520 C160 470 280 540 420 500 C560 460 680 530 820 490 C980 445 1120 510 1440 470 L1440 620 L0 620 Z"/>
+  <path fill="url(#sea)" d="M0 600 C220 575 420 630 680 595 C940 560 1180 620 1440 585 L1440 900 L0 900 Z"/>
+  <path fill="#0e9f6e" d="M980 560 C1005 500 1035 455 1065 430 C1075 470 1095 510 1120 545 C1090 555 1045 560 980 560 Z"/>
+  <path fill="#12805a" d="M1045 560 C1060 515 1085 480 1110 455 C1118 490 1135 520 1155 548 C1125 555 1080 560 1045 560 Z"/>
+  <g fill="#14213d" opacity="0.85">
+    <rect x="1180" y="390" width="26" height="170"/>
+    <rect x="1218" y="390" width="26" height="170"/>
+    <polygon points="1193,360 1193,390 1231,390 1231,360 1212,335"/>
+    <rect x="1260" y="450" width="48" height="110"/>
+    <rect x="1140" y="480" width="28" height="80"/>
+  </g>
+  <path fill="#e8f6f0" opacity="0.55" d="M0 780 C180 760 320 800 520 775 C720 750 980 805 1440 770 L1440 900 L0 900 Z"/>
+</svg>

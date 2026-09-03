@@ -1,0 +1,60 @@
+.manual-wrap {
+    width: min(740px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 3.4rem 0 4.8rem;
+}
+
+.manual-doc h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5.5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    margin: 0.25rem 0 0.85rem;
+}
+
+.manual-doc h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+    margin: 2.3rem 0 0.55rem;
+}
+
+.manual-doc p,
+.manual-doc li {
+    font-size: 1.05rem;
+    color: var(--muted);
+}
+
+.manual-doc h2 + p,
+.manual-doc .lede {
+    color: var(--muted);
+}
+
+.toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 1.5rem 0 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+
+.toc a {
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.toc a:hover {
+    color: var(--accent);
+}
+
+.manual-doc ol,
+.manual-doc ul {
+    padding-left: 1.15rem;
+}
+
+.manual-doc li + li {
+    margin-top: 0.4rem;
+}

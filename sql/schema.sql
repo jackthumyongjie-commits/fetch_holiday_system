@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS holidays (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    holiday_date DATE NOT NULL,
+    year SMALLINT UNSIGNED NOT NULL,
+    name_en VARCHAR(160) NOT NULL,
+    name_zh VARCHAR(160) NOT NULL,
+    name_ms VARCHAR(160) NOT NULL,
+    type ENUM('federal', 'state', 'observance') NOT NULL,
+    states VARCHAR(255) DEFAULT NULL,
+    description_en VARCHAR(500) DEFAULT NULL,
+    description_zh VARCHAR(500) DEFAULT NULL,
+    description_ms VARCHAR(500) DEFAULT NULL,
+    is_birthday TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_holiday (holiday_date, name_en),
+    INDEX idx_year (year),
+    INDEX idx_holiday_date (holiday_date),
+    INDEX idx_type (type),
+    INDEX idx_is_birthday (is_birthday),
+    INDEX idx_year_type (year, type)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
