@@ -1,10 +1,9 @@
 <?php
 /**
- * Cuti MY – database configuration
+ * Cuti MY – database configuration (example)
  *
- * Update these four values to match your MySQL / MariaDB account.
- * On shared hosting (iFastNet / cPanel), use the database name, username
- * and password shown in cPanel → MySQL Databases.
+ * Copy this file to db.php and fill in your credentials:
+ *   copy config/db.example.php config/db.php
  */
 
 $host = 'localhost';

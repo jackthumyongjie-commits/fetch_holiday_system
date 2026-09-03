@@ -5,7 +5,7 @@ Browse federal, state, birthday and observance holidays in Malaysia — calendar
 ## Quick start (XAMPP)
 
 1. Place the project in `C:\xampp\htdocs\project\holiday_system`
-2. Edit `config/db.php` with your database credentials
+2. Copy `config/db.example.php` to `config/db.php` and fill in your database credentials
 3. Start **Apache** and **MySQL** in XAMPP
 4. Create a MySQL database named `cuti_my` (charset `utf8mb4`) in phpMyAdmin
 5. Open http://localhost/project/holiday_system/install.php
@@ -20,6 +20,12 @@ Typical local database values:
 | Database | `cuti_my` |
 | User | `root` |
 | Password | your MySQL password (often empty on default XAMPP) |
+
+```bash
+copy config\db.example.php config\db.php
+```
+
+Then edit `config/db.php`. Do not commit real passwords — `config/db.php` is listed in `.gitignore`.
 
 CLI install:
 
@@ -77,7 +83,8 @@ holiday_system/
 │   ├── js/                   app.js, i18n.js, manual.js
 │   └── img/                  Hero artwork
 ├── config/
-│   └── db.php                Database credentials
+│   ├── db.example.php        Example credentials (safe to commit)
+│   └── db.php                Local credentials (gitignored)
 ├── docs/
 │   └── screenshots/          README images
 ├── includes/
@@ -98,7 +105,7 @@ holiday_system/
 1. Copy the project to `C:\xampp\htdocs\project\holiday_system`
 2. Start **Apache** and **MySQL** in XAMPP
 3. Create database `cuti_my` (utf8mb4)
-4. Edit `config/db.php`:
+4. Copy `config/db.example.php` to `config/db.php` and edit:
 
 ```php
 $host = 'localhost';
@@ -106,6 +113,8 @@ $dbname = 'cuti_my';
 $username = 'root';
 $password = '';   // your MySQL password
 ```
+
+`config/db.php` is gitignored so real credentials stay local.
 
 5. Open: http://localhost/project/holiday_system/install.php
 6. After success, open: http://localhost/project/holiday_system/index.php
